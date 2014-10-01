@@ -1,4 +1,5 @@
-== TODO ==
+TODO
+===========
 
  - Vorhandene Videos nicht erneut runterladen
  - Automatisch title und co anpassen
@@ -7,4 +8,4 @@
  - XML-Bib nutzten
  - 
  - Interaktion?
- -- Sich die einzelnen XML Dateien autom. holen
+ - Sich die einzelnen XML Dateien autom. holen
