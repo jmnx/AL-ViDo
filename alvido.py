@@ -5,7 +5,7 @@ import sys
 
 from os import path, mkdir, chdir
 
-print "\nWeitz Video Download Skript\nv0.1\n\n"
+print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n"
 
 # Die Datei user_data.py befindet sich nicht mit im Repository
 # Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
@@ -18,7 +18,7 @@ else:
 	usdata.write("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = ''\npwd = ''")
 	usdata.close()
 	
-	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenzen Sie diese!\n(Abbruch)"
+	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
 	sys.exit()
 
 # Benutzerdaten werden importiert
@@ -63,8 +63,8 @@ for match in matches:
 	elif typ == "webm":
 		dwnld_url = webms(match)
 	else:
-		print "FEHLER: Unbekannter Dateityp!"
-		break
+		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
+		sys.exit()
 	
 	dateiname = name+"."+typ
 
