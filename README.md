@@ -1,4 +1,4 @@
-Weitz Video
+AL ViDo
 ===========
 
 Ein Python Skript welches automatisch alle neuen Videos einer Vorlesungsreihe herunterläd.
