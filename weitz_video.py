@@ -3,6 +3,17 @@
 import sre
 import urllib2
 import base64
+from os import path, mkdir, chdir
+
+#eigene
+from user_data import *
+
+def newDirCh(name):
+	if path.exists(name):
+		chdir(name)
+	else:
+		mkdir(name)
+		chdir(name)
 
 def returnOne(regex, string):
 	data  = sre.findall(regex, string)
@@ -48,11 +59,15 @@ def download(url, file_name):
 
 # URL zur XML-Datei:
 url = "http://weitz.de/haw-videos/2014_WiSe/Mathematik_2/data.xml"
-# Zugangs-Daten:
-usr = "***"
-pwd = "***"
 # "mp4" oder "webm"
 typ = "webm"
+# Faecher
+crs = "m2"
+# Semester
+sem = "2014_WiSe"
+
+
+newDirCh(crs)
 
 website_html = getSite(url,usr,pwd)
 
@@ -64,6 +79,8 @@ for match in matches:
 	title = returnOne('title=".*?"',match)
 	datum = title[10:20]
 	name  = title[21:len(title)-1]
+	
+	newDirCh(datum)
 
 	if typ == "mp4":
 		dwnld_url = mp4s(match)
@@ -73,7 +90,14 @@ for match in matches:
 		print "FEHLER: Unbekannter Dateityp!"
 		break
 	
-	download(dwnld_url, name+"."+typ)
+	dateiname = name+"."+typ
+
+	if path.isfile(dateiname):
+		print "Datei schon runtergeladen: "+dateiname
+	else:
+		download(dwnld_url, dateiname)
+
+	chdir("..")
 
 	print "============================================================="
 
