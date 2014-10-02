@@ -3,9 +3,24 @@
 import sre
 import urllib2
 import base64
+import sys
 from os import path, mkdir, chdir
 
-#eigene
+# Die Datei user_data.py befindet sich nicht mit im Repository
+# Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
+# Bitte ergaenzen sie die Datei um die von Weitz erhaltenen Nutzerdaten
+
+if path.isfile("user_data.py"):
+	print "Nutzerdaten gefunden!"
+else:
+	usdata = open("user_data.py", 'wb')
+	usdata.write("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = ''\npwd = ''")
+	usdata.close()
+	
+	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenzen Sie diese!\n"
+	sys.exit()
+
+# Benutzerdaten werden importiert
 from user_data import *
 
 def newDirCh(name):
