@@ -18,7 +18,7 @@ else:
 	usdata.write("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = ''\npwd = ''")
 	usdata.close()
 	
-	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenzen Sie diese!\n"
+	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenzen Sie diese!\n(Abbruch)"
 	sys.exit()
 
 # Benutzerdaten werden importiert
