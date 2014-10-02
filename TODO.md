@@ -1,8 +1,9 @@
 TODO
 ===========
 
- - Vorhandene Videos nicht erneut runterladen
- - Automatisch title und co anpassen
+ - Für jeden Tag ein eigenes Verzeichnis erstellen
+ - Vorhandene Videos nicht erneut runterladen / vor überschreiben warnen
+ - Automatisch title und co anpassen (Zeilen 64-65)
  - regex optimieren
  - returnOne ersetzten
  - XML-Bib nutzten

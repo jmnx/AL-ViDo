@@ -15,7 +15,7 @@ def mp4s(string):
 def webms(string):
 	return returnOne('type="webm.*?.webm', string)[17:]
 
-def getXML(url,usr,pwd):
+def getSite(url,usr,pwd):
 	request = urllib2.Request(url)
 	base64string = base64.encodestring('%s:%s' % (usr, pwd)).replace('\n', '')
 	request.add_header("Authorization", "Basic %s" % base64string)   
@@ -54,7 +54,7 @@ pwd = "***"
 # "mp4" oder "webm"
 typ = "webm"
 
-website_html = getXML(url,usr,pwd)
+website_html = getSite(url,usr,pwd)
 
 matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
 
