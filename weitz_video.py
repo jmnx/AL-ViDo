@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
 import sre
-import urllib2
-import base64
 import sys
+
 from os import path, mkdir, chdir
+
+print "\nWeitz Video Download Skript\nv0.1\n\n"
 
 # Die Datei user_data.py befindet sich nicht mit im Repository
 # Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
 # Bitte ergaenzen sie die Datei um die von Weitz erhaltenen Nutzerdaten
 
 if path.isfile("user_data.py"):
-	print "Nutzerdaten gefunden!"
+	print "Nutzerdaten gefunden!\n"
 else:
 	usdata = open("user_data.py", 'wb')
 	usdata.write("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = ''\npwd = ''")
@@ -23,64 +24,24 @@ else:
 # Benutzerdaten werden importiert
 from user_data import *
 
-def newDirCh(name):
-	if path.exists(name):
-		chdir(name)
-	else:
-		mkdir(name)
-		chdir(name)
-
-def returnOne(regex, string):
-	data  = sre.findall(regex, string)
-	for value in data:
-		return value
-
-def mp4s(string):
-	return returnOne('type="mp4.*?.mp4', string)[16:]
-
-def webms(string):
-	return returnOne('type="webm.*?.webm', string)[17:]
-
-def getSite(url,usr,pwd):
-	request = urllib2.Request(url)
-	base64string = base64.encodestring('%s:%s' % (usr, pwd)).replace('\n', '')
-	request.add_header("Authorization", "Basic %s" % base64string)   
-	website = urllib2.urlopen(request)
-	return website.read()
-
-def download(url, file_name):
-	u = urllib2.urlopen(url)
-	f = open(file_name, 'wb')
-	meta = u.info()
-	file_size = int(meta.getheaders("Content-Length")[0])
-	print "Downloading: %s Bytes: %s" % (file_name, file_size)
-
-	file_size_dl = 0
-	block_sz = 8192
-	while True:
-		buffer = u.read(block_sz)
-		if not buffer:
-			break
-	
-		file_size_dl += len(buffer)
-		f.write(buffer)
-		status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-		# 6*9
-		status = status + chr(8)*(len(status)+1)
-		print status,
-	
-	f.close()
+from functions import *
 
 
-# URL zur XML-Datei:
-url = "http://weitz.de/haw-videos/2014_WiSe/Mathematik_2/data.xml"
-# "mp4" oder "webm"
-typ = "webm"
-# Faecher
-crs = "m2"
-# Semester
-sem = "2014_WiSe"
+print "Welches Datei Format moechtest du haben?"
+typ  = raw_input("[webm/mp4] : ")
 
+print "In welchem Jahr hat das Semester angefangen?"
+year = raw_input("z.B. 2014 : ")
+print "Winter- oder Sommersemester?"
+sem  = raw_input("[w/s] : ")
+
+print "Welches Fach moechtest du runterladen?"
+crs  = raw_input("[m1/m2/ti] : ")
+
+
+# 6*9
+
+url = genURL(year,sem,crs)
 
 newDirCh(crs)
 
