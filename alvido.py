@@ -71,7 +71,7 @@ else:
 url = genURL(year,sem,crs)
 
 #newDirCh(year+"_"+sem+"_"+crs)
-newDirCh(crs)
+newDirCh(beautifulCrs(crs))
 
 website_html = getSitePwd(url,usr,pwd)
 
@@ -91,24 +91,23 @@ for match in matches:
 	#Kommentare
 	if cmt == "j":	
 		mediathek = returnOne('url=".*?"', match)
-		comments = getComments(mediathek[5:len(mediathek)-1])
-#		print comments
-		saveTxtFile(comments, name+".html")
+		print mediathek[5:len(mediathek)-1]
+		saveTxtFile(fckHTML(mediathek[5:len(mediathek)-1], year+" "+sem+" "+crs+" - "+datum+" - "+name), name+".html")
 
-#	if typ == "mp4":
-#		dwnld_url = mp4s(match)
-#	elif typ == "webm":
-#		dwnld_url = webms(match)
-#	else:
-#		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-#		sys.exit()
+	if typ == "mp4":
+		dwnld_url = mp4s(match)
+	elif typ == "webm":
+		dwnld_url = webms(match)
+	else:
+		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
+		sys.exit()
 	
-#	dateiname = name+"."+typ
-#
-#	if path.isfile(dateiname):
-#		print "Datei schon runtergeladen: "+dateiname
-#	else:
-#		download(dwnld_url, dateiname)
+	dateiname = name+"."+typ
+
+	if path.isfile(dateiname):
+		print "Datei schon runtergeladen: "+dateiname
+	else:
+		download(dwnld_url, dateiname)
 
 	chdir("..")
 

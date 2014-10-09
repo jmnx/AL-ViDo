@@ -61,6 +61,20 @@ def download(url, file_name):
 	
 	f.close()
 
+def beautifulCrs(crs):
+	if crs == "m1":
+		crs = "Mathematik_1"
+	elif crs == "m2":
+		crs = "Mathematik_2"
+	elif crs == "ti":
+		crs = "Theoretische_Informatik"
+	else:
+		print "\n\nACHTUNG:\nKeinen gueltigen Kurs angegeben!\n(Abbruch)"
+		sys.exit()
+
+	return crs
+
+
 def genURL(jahr,sem,crs):
 	if 2013 > int(jahr) or int(jahr) > 2015:
 		print "\n\nACHTUNG:\nKein gueltiges Jahr angegeben!\n(Abbruch)"
@@ -74,33 +88,26 @@ def genURL(jahr,sem,crs):
 		print "\n\nACHTUNG:\nKein gueltiges Semester angegeben!\n(Abbruch)"
 		sys.exit()
 
-	if crs == "m1":
-		crs = "Mathematik_1"
-	elif crs == "m2":
-		crs = "Mathematik_2"
-	elif crs == "ti":
-		crs = "Theoretische_Informatik"
-	else:
-		print "\n\nACHTUNG:\nKeinen gueltigen Kurs angegeben!\n(Abbruch)"
-		sys.exit()
+	crs = beautifulCrs(crs)
 	
 	# Beispiel: http://weitz.de/haw-videos/2014_WiSe/Mathematik_2/data.xml
 	return "http://weitz.de/haw-videos/"+jahr+"_"+sem+"/"+crs+"/data.xml"
 
 
-def getComments(mediathek_link):
-	print "mediathek "+mediathek_link
-	mediathek_page = getSite(mediathek_link)
-#	print mediathek_page
+def fckHTML(source, title):
+	
+	print "hohle die Kommentare aus der Mediathek .."
+	site = getSite(source)
+	
+	
+	#str.find(str, beg=0 end=len(string))
 
-	return mediathek_page
+	anf = site.find('<div class="box-w comments clearfix">')
+	end = site.find('</div> <!-- #contentWrapper -->', anf)
 
-#	anfRegEx = '  <div id="media_comments_list">'
-#	endRegEx = '        <!-- Version SVN: $Id: _simpleContent.php 2'
-#	matches = sre.findall(anfRegEx+'.*?'+endRegEx, mediathek_page)
-#	for match in matches:
-#		print match
-#		print "hier"
+	htmlkopf = "<html><head><title>"+title+"</title></head><body>"
+
+	return htmlkopf+site[anf:end+32]+"</body></html>"
 
 
 def saveTxtFile(contend, fname):
