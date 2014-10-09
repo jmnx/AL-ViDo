@@ -1,6 +1,8 @@
 # Download
 *.mp4
 *.webm
+*.html
+*.xml
 m1/
 m2/
 ti/
@@ -10,6 +12,8 @@ Theoretische_Informatik/
 
 user_data.py
 setup.py
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

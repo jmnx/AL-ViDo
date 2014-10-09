@@ -55,7 +55,6 @@ def download(url, file_name):
 		file_size_dl += len(buffer)
 		f.write(buffer)
 		status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-		# 6*9
 		status = status + chr(8)*(len(status)+1)
 		print status,
 	
@@ -74,12 +73,7 @@ def beautifulCrs(crs):
 
 	return crs
 
-
-def genURL(jahr,sem,crs):
-	if 2013 > int(jahr) or int(jahr) > 2015:
-		print "\n\nACHTUNG:\nKein gueltiges Jahr angegeben!\n(Abbruch)"
-		sys.exit()
-
+def beautifulSem(sem):
 	if sem == "w":
 		sem = "WiSe"
 	elif sem == "s":
@@ -88,13 +82,22 @@ def genURL(jahr,sem,crs):
 		print "\n\nACHTUNG:\nKein gueltiges Semester angegeben!\n(Abbruch)"
 		sys.exit()
 
+	return sem
+
+
+def genURL(jahr,sem,crs):
+	if 2013 > int(jahr) or int(jahr) > 2015:
+		print "\n\nACHTUNG:\nKein gueltiges Jahr angegeben!\n(Abbruch)"
+		sys.exit()
+
+	sem = beautifulSem(sem)
 	crs = beautifulCrs(crs)
 	
 	# Beispiel: http://weitz.de/haw-videos/2014_WiSe/Mathematik_2/data.xml
 	return "http://weitz.de/haw-videos/"+jahr+"_"+sem+"/"+crs+"/data.xml"
 
 
-def fckHTML(source, title):
+def getComments(source, title):
 	
 	print "hohle die Kommentare aus der Mediathek .."
 	site = getSite(source)

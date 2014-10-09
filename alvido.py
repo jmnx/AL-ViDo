@@ -43,9 +43,6 @@ else:
 	print "Kommentare Speichern?"
 	cmt = "j"
 
-
-	# 6*9
-
 	print "In welchem Jahr hat das Semester angefangen?"
 	year = raw_input("z.B. 2014 : ")
 
@@ -64,16 +61,13 @@ else:
 		saveTxtFile(savesetup, "setup.py")
 		print "Setup erstellt, beim naechsten starten des Skripts werden die Fragen nicht wieder gestellt."
 
-	
 
 
-
-url = genURL(year,sem,crs)
-
-#newDirCh(year+"_"+sem+"_"+crs)
 newDirCh(beautifulCrs(crs))
 
-website_html = getSitePwd(url,usr,pwd)
+
+website_html = getSitePwd(genURL(year,sem,crs),usr,pwd)
+
 
 matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
 
@@ -86,29 +80,35 @@ for match in matches:
 	
 	newDirCh(datum)
 
-	print year+" "+sem+" "+crs+" Datum: "+datum+" Name: "+name
+	print "\n---> "+year+" "+beautifulSem(sem)+" "+beautifulCrs(crs)+" Datum: "+datum+" Name: "+name
 
 	#Kommentare
 	if cmt == "j":	
 		mediathek = returnOne('url=".*?"', match)
 		print mediathek[5:len(mediathek)-1]
-		saveTxtFile(fckHTML(mediathek[5:len(mediathek)-1], year+" "+sem+" "+crs+" - "+datum+" - "+name), name+".html")
+		comment = getComments(mediathek[5:len(mediathek)-1], year+" "+sem+" "+crs+" - "+datum+" - "+name)
+		
+		if comment != "false" :
+			saveTxtFile(comment, name+".html")
+		else:
+			print "zu diesem Video sind keine Kommentare vorhanden!"
 
-	if typ == "mp4":
-		dwnld_url = mp4s(match)
-	elif typ == "webm":
-		dwnld_url = webms(match)
-	else:
-		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-		sys.exit()
-	
-	dateiname = name+"."+typ
 
-	if path.isfile(dateiname):
-		print "Datei schon runtergeladen: "+dateiname
-	else:
-		download(dwnld_url, dateiname)
-
+#	if typ == "mp4":
+#		dwnld_url = mp4s(match)
+#	elif typ == "webm":
+#		dwnld_url = webms(match)
+#	else:
+#		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
+#		sys.exit()
+#	
+#	dateiname = name+"."+typ
+#
+#	if path.isfile(dateiname):
+#		print "Datei schon runtergeladen: "+dateiname
+#	else:
+#		download(dwnld_url, dateiname)
+#
 	chdir("..")
 
 	print "============================================================="
