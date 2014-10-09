@@ -73,7 +73,6 @@ matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
 
 for match in matches:
 
-	#ACHTUNG: Diese Felder funktionieren momentan moeglicherweise nur bei M1 & M2! Und muessen eventuell angepasst werden.
 	title = returnOne('title=".*?"',match)
 	datum = title[10:20]
 	name  = title[21:len(title)-1]
@@ -85,7 +84,8 @@ for match in matches:
 	#Kommentare
 	if cmt == "j":	
 		mediathek = returnOne('url=".*?"', match)
-		print mediathek[5:len(mediathek)-1]
+		print "Mediathek URL: "+mediathek[5:len(mediathek)-1]
+
 		comment = getComments(mediathek[5:len(mediathek)-1], year+" "+sem+" "+crs+" - "+datum+" - "+name)
 		
 		if comment != "false" :
@@ -94,28 +94,24 @@ for match in matches:
 			print "zu diesem Video sind keine Kommentare vorhanden!"
 
 
-#	if typ == "mp4":
-#		dwnld_url = mp4s(match)
-#	elif typ == "webm":
-#		dwnld_url = webms(match)
-#	else:
-#		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-#		sys.exit()
-#	
-#	dateiname = name+"."+typ
-#
-#	if path.isfile(dateiname):
-#		print "Datei schon runtergeladen: "+dateiname
-#	else:
-#		download(dwnld_url, dateiname)
-#
+	if typ == "mp4":
+		dwnld_url = mp4s(match)
+	elif typ == "webm":
+		dwnld_url = webms(match)
+	else:
+		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
+		sys.exit()
+	
+	dateiname = name+"."+typ
+
+	if path.isfile(dateiname):
+		print "Datei schon runtergeladen: "+dateiname
+	else:
+		download(dwnld_url, dateiname)
+
 	chdir("..")
 
 	print "============================================================="
-
-
-
-
 
 
 

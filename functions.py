@@ -110,7 +110,10 @@ def getComments(source, title):
 
 	htmlkopf = "<html><head><title>"+title+"</title></head><body>"
 
-	return htmlkopf+site[anf:end+32]+"</body></html>"
+	if site.find("Es wurden bisher keine Kommentare abgegeben.") == -1:
+		return htmlkopf+site[anf:end+32]+"</body></html>"
+	else:
+		return "false"
 
 
 def saveTxtFile(contend, fname):
