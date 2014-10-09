@@ -5,6 +5,7 @@ m1/
 m2/
 ti/
 user_data.py
+setup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

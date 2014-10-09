@@ -24,16 +24,23 @@ def mp4s(string):
 def webms(string):
 	return returnOne('type="webm.*?.webm', string)[17:]
 
-def getSite(url,usr,pwd):
+def getSitePwd(url,usr,pwd):
 	request = urllib2.Request(url)
 	base64string = base64.encodestring('%s:%s' % (usr, pwd)).replace('\n', '')
 	request.add_header("Authorization", "Basic %s" % base64string)   
 	website = urllib2.urlopen(request)
 	return website.read()
 
+def getSite(url):
+	request = urllib2.Request(url)
+	website = urllib2.urlopen(request)
+	return website.read()
+
 def download(url, file_name):
 	u = urllib2.urlopen(url)
 	f = open(file_name, 'wb')
+# 6*9	
+
 	meta = u.info()
 	file_size = int(meta.getheaders("Content-Length")[0])
 	print "Es Wird herunter geladen : %s Bytes: %s" % (file_name, file_size)
@@ -79,6 +86,28 @@ def genURL(jahr,sem,crs):
 	
 	# Beispiel: http://weitz.de/haw-videos/2014_WiSe/Mathematik_2/data.xml
 	return "http://weitz.de/haw-videos/"+jahr+"_"+sem+"/"+crs+"/data.xml"
+
+
+def getComments(mediathek_link):
+	print "mediathek "+mediathek_link
+	mediathek_page = getSite(mediathek_link)
+#	print mediathek_page
+
+	return mediathek_page
+
+#	anfRegEx = '  <div id="media_comments_list">'
+#	endRegEx = '        <!-- Version SVN: $Id: _simpleContent.php 2'
+#	matches = sre.findall(anfRegEx+'.*?'+endRegEx, mediathek_page)
+#	for match in matches:
+#		print match
+#		print "hier"
+
+
+def saveTxtFile(contend, fname):
+	f = open(fname, 'wb')
+	f.write(contend)
+	f.close()
+
 
 
 
