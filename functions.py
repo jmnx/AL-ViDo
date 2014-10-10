@@ -18,12 +18,6 @@ def returnOne(regex, string):
 	for value in data:
 		return value
 
-def mp4s(string):
-	return returnOne('type="mp4.*?.mp4', string)[16:]
-
-def webms(string):
-	return returnOne('type="webm.*?.webm', string)[17:]
-
 def getSitePwd(url,usr,pwd):
 	request = urllib2.Request(url)
 	base64string = base64.encodestring('%s:%s' % (usr, pwd)).replace('\n', '')
@@ -36,10 +30,26 @@ def getSite(url):
 	website = urllib2.urlopen(request)
 	return website.read()
 
+def dwnldVideoIfNExist(string, name, typ):
+
+	if typ == "mp4":
+		download_url = returnOne('type="mp4.*?.mp4', string)[16:]
+	elif typ == "webm":
+		download_url = returnOne('type="webm.*?.webm', string)[17:]
+	else:
+		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
+		sys.exit()
+# 6*9
+	file_name = name+"."+typ
+
+	if path.isfile(file_name):
+		print "Datei schon runtergeladen: "+file_name
+	else:
+		download(download_url, file_name)
+
 def download(url, file_name):
 	u = urllib2.urlopen(url)
 	f = open(file_name, 'wb')
-# 6*9	
 
 	meta = u.info()
 	file_size = int(meta.getheaders("Content-Length")[0])
@@ -97,23 +107,24 @@ def genURL(jahr,sem,crs):
 	return "http://weitz.de/haw-videos/"+jahr+"_"+sem+"/"+crs+"/data.xml"
 
 
-def getComments(source, title):
-	
-	print "hohle die Kommentare aus der Mediathek .."
-	site = getSite(source)
-	
-	
-	#str.find(str, beg=0 end=len(string))
+def saveComments(match, title):
 
+	mediathek = returnOne('url=".*?"', match)
+	mediathek = mediathek[5:len(mediathek)-1]
+
+	print "Holen der Kommentare aus der Mediathek .."
+	print "Mediathek URL: "+mediathek
+
+	site = getSite(mediathek)
+	
 	anf = site.find('<div class="box-w comments clearfix">')
 	end = site.find('</div> <!-- #contentWrapper -->', anf)
 
-	htmlkopf = "<html><head><title>"+title+"</title></head><body>"
-
 	if site.find("Es wurden bisher keine Kommentare abgegeben.") == -1:
-		return htmlkopf+site[anf:end+32]+"</body></html>"
+		saveTxtFile("<html><head><title>"+title+"</title></head><body>"+site[anf:end+32]+"</body></html>", title+".html")
+
 	else:
-		return "false"
+		print "\t\tzu diesem Video sind keine Kommentare vorhanden!"
 
 
 def saveTxtFile(contend, fname):

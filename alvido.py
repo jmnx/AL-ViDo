@@ -10,10 +10,10 @@ print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n\nBitte beachtet, d
 print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen."
 
 #haftung  = raw_input("Vestanden [j/n] : ")
-haftung  = "j"
+#haftung  = "j"
 
-if haftung != "j" :
-	sys.exit()
+#if haftung != "j" :
+#	sys.exit()
 
 # Die Datei user_data.py befindet sich nicht mit im Repository
 # Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
@@ -22,19 +22,24 @@ if haftung != "j" :
 if path.isfile("user_data.py"):
 	print "Nutzerdaten gefunden!\n"
 else:
-	saveTxtFile("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = ''\npwd = ''", "user_data.py")
+	saveTxtFile("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = 'xxx'\npwd = 'xxx'", "user_data.py")
 	
-	print "ACHTUNG:\nNutzerdaten wurden nicht gefunden!\nEine entsprechende Datei(user_data.py) wurde erstellt.\nBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
+	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
 	sys.exit()
 
-# Benutzerdaten werden importiert
 from user_data import *
+
+if usr == 'xxx' or pwd == 'xxx':
+	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
+	sys.exit()
 
 from functions import *
 
 
 if path.isfile("setup.py"):
+
 	from setup import *
+# 6*9
 	print "Setup-Datei gefunden und eingebunden."
 
 else:
@@ -83,35 +88,13 @@ for match in matches:
 
 	#Kommentare
 	if cmt == "j":	
-		mediathek = returnOne('url=".*?"', match)
-		print "Mediathek URL: "+mediathek[5:len(mediathek)-1]
-
-		comment = getComments(mediathek[5:len(mediathek)-1], year+" "+sem+" "+crs+" - "+datum+" - "+name)
-		
-		if comment != "false" :
-			saveTxtFile(comment, name+".html")
-		else:
-			print "zu diesem Video sind keine Kommentare vorhanden!"
-
-
-	if typ == "mp4":
-		dwnld_url = mp4s(match)
-	elif typ == "webm":
-		dwnld_url = webms(match)
-	else:
-		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-		sys.exit()
+		saveComments(match, name)
 	
-	dateiname = name+"."+typ
-
-	if path.isfile(dateiname):
-		print "Datei schon runtergeladen: "+dateiname
-	else:
-		download(dwnld_url, dateiname)
+	dwnldVideoIfNExist(match, name, typ)
 
 	chdir("..")
 
-	print "============================================================="
+	print "==============================================================="
 
 
 
