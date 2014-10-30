@@ -113,7 +113,7 @@ def saveComments(match, title):
 	mediathek = mediathek[5:len(mediathek)-1]
 
 	print "Holen der Kommentare aus der Mediathek .."
-	print "Mediathek URL: "+mediathek
+#	print "Mediathek URL: "+mediathek
 
 	site = getSite(mediathek)
 	
@@ -124,7 +124,7 @@ def saveComments(match, title):
 		saveTxtFile("<html><head><title>"+title+"</title></head><body>"+site[anf:end+32]+"</body></html>", title+".html")
 
 	else:
-		print "\t\tzu diesem Video sind keine Kommentare vorhanden!"
+		print "\t\tzu diesem Video sind keine Kommentare vorhanden!\n\n"
 
 
 def saveTxtFile(contend, fname):

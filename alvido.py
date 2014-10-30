@@ -5,6 +5,8 @@ import sys
 
 from os import path, mkdir, chdir
 
+from functions import *
+
 print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n\nBitte beachtet, dass ihr die Videos nicht weiter geben duerft!\n\n"
 
 print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen."
@@ -32,8 +34,6 @@ from user_data import *
 if usr == 'xxx' or pwd == 'xxx':
 	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
 	sys.exit()
-
-from functions import *
 
 
 if path.isfile("setup.py"):
@@ -84,7 +84,7 @@ for match in matches:
 	
 	newDirCh(datum)
 
-	print "\n---> "+year+" "+beautifulSem(sem)+" "+beautifulCrs(crs)+" Datum: "+datum+" Name: "+name
+	print "\n---> "+year+" "+beautifulSem(sem)+" "+beautifulCrs(crs)+" Datum: "+datum+" Name: "+name+"\n"
 
 	#Kommentare
 	if cmt == "j":	
@@ -94,7 +94,7 @@ for match in matches:
 
 	chdir("..")
 
-	print "==============================================================="
+	print "\n =============================================================== <<o>>"
 
 
 
