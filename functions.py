@@ -30,7 +30,7 @@ def getSite(url):
 	website = urllib2.urlopen(request)
 	return website.read()
 
-def dwnldVideoIfNExist(string, name, typ):
+def dwnldVideo(string, name, typ, force):
 
 	if typ == "mp4":
 		download_url = returnOne('type="mp4.*?.mp4', string)[16:]
@@ -42,7 +42,7 @@ def dwnldVideoIfNExist(string, name, typ):
 # 6*9
 	file_name = name+"."+typ
 
-	if path.isfile(file_name):
+	if path.isfile(file_name) and not force:
 		print "Datei schon runtergeladen: "+file_name
 	else:
 		download(download_url, file_name)
@@ -112,7 +112,7 @@ def saveComments(match, title):
 	mediathek = returnOne('url=".*?"', match)
 	mediathek = mediathek[5:len(mediathek)-1]
 
-	print "Holen der Kommentare aus der Mediathek .."
+#	print "Holen der Kommentare aus der Mediathek .."
 #	print "Mediathek URL: "+mediathek
 
 	site = getSite(mediathek)
@@ -122,9 +122,10 @@ def saveComments(match, title):
 
 	if site.find("Es wurden bisher keine Kommentare abgegeben.") == -1:
 		saveTxtFile("<html><head><title>"+title+"</title></head><body>"+site[anf:end+32]+"</body></html>", title+".html")
+		print ".. Kommentare gespeichert..\n\n"
 
 	else:
-		print "\t\tzu diesem Video sind keine Kommentare vorhanden!\n\n"
+		print ".. keine Kommentare vorhanden ..\n"
 
 
 def saveTxtFile(contend, fname):

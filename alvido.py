@@ -9,7 +9,50 @@ from functions import *
 
 print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n\nBitte beachtet, dass ihr die Videos nicht weiter geben duerft!\n\n"
 
-print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen."
+print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen.\n\n"
+
+# ------------------------------------------------------------------------------------ Parameter
+debugmode = False
+nosetup = False
+forceDownload = False
+nocrs = False
+savesetup = "n"
+
+for argument in sys.argv :
+#	print "Argumnt: " +argument
+
+	if argument == "mp4" or argument == "webm" :
+		typ = argument
+		nosetup = True
+#		print "Fileformat: "+argument
+	
+	elif argument == "w" or argument == "s" :
+		sem = argument
+		nosetup = True
+#		print "Semester: "+argument
+
+	elif argument == "ti" or argument == "m1" or argument == "m2" :
+		mcrs = argument
+		nocrs = True
+		print "\nKurs: "+argument+" -> Kursangabe wird ueberschrieben\n"
+
+	elif argument == "2012" or argument == "2013" or argument == "2014" or argument == "2015" :
+		year = argument
+		nosetup = True
+# 6*9		print "Jahr: "+argument
+
+	elif argument == "save" :
+		savesetup = "j"
+		nosetup = True
+		print "Save Setup!"
+
+	elif argument == "force" :
+		forceDownload = True
+		print "Force Download! \n"
+
+	elif not argument == "./alvido.py" :
+		print "\n\nACHTUNG:\n\tKein gueltiges Argument : "+argument+"\n(Abbruch)"
+		sys.exit()
 
 #haftung  = raw_input("Vestanden [j/n] : ")
 #haftung  = "j"
@@ -21,6 +64,7 @@ print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden a
 # Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
 # Bitte ergaenzen sie die Datei um die von Weitz erhaltenen Nutzerdaten
 
+# ------------------------------------------------------------------------------------ Benutzerdaten
 if path.isfile("user_data.py"):
 	print "Nutzerdaten gefunden!\n"
 else:
@@ -30,23 +74,21 @@ else:
 	sys.exit()
 
 from user_data import *
+#print "Nutzerdaten: "+usr+":"+pwd
 
 if usr == 'xxx' or pwd == 'xxx':
 	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
 	sys.exit()
 
+# ------------------------------------------------------------------------------------ Setup
 
-if path.isfile("setup.py"):
-
+if path.isfile("setup.py") and not nosetup :
 	from setup import *
-# 6*9
 	print "Setup-Datei gefunden und eingebunden."
 
-else:
+elif not nosetup :
 	print "Welches Datei Format moechtest du haben?"
 	typ  = raw_input("[webm/mp4] : ")
-	print "Kommentare Speichern?"
-	cmt = "j"
 
 	print "In welchem Jahr hat das Semester angefangen?"
 	year = raw_input("z.B. 2014 : ")
@@ -60,12 +102,22 @@ else:
 	print "Moechtest du deine Eingabe in einer Setup-Datei speichern?"
 	savesetup = raw_input("[j/n] : ")
 
-	if savesetup == "j":
-		savesetup = '#!/usr/bin/env python\n\ntyp  = "'+typ+'"\ncmt  = "'+cmt+'"\nyear = "'+year+'"\nsem  = "'+sem+'"\ncrs  = "'+crs+'"'
 
-		saveTxtFile(savesetup, "setup.py")
-		print "Setup erstellt, beim naechsten starten des Skripts werden die Fragen nicht wieder gestellt."
+if nocrs :
+	crs = mcrs
 
+#	print "Kommentare Speichern?"
+cmt = "j"
+
+
+if savesetup == "j":
+	savesetup = '#!/usr/bin/env python\n\ntyp  = "'+typ+'"\ncmt  = "'+cmt+'"\nyear = "'+year+'"\nsem  = "'+sem+'"\ncrs  = "'+crs+'"'
+
+	saveTxtFile(savesetup, "setup.py")
+	print "Setup erstellt, beim naechsten starten des Skripts werden die Fragen nicht wieder gestellt."
+
+
+# ------------------------------------------------------------------------------------ Los gehts!
 
 
 newDirCh(beautifulCrs(crs))
@@ -77,6 +129,8 @@ website_html = getSitePwd(genURL(year,sem,crs),usr,pwd)
 matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
 
 for match in matches:
+
+	print "\n\n =============================================================== <<o>>"
 
 	title = returnOne('title=".*?"',match)
 	datum = title[10:20]
@@ -90,12 +144,10 @@ for match in matches:
 	if cmt == "j":	
 		saveComments(match, name)
 	
-	dwnldVideoIfNExist(match, name, typ)
+	dwnldVideo(match, name, typ, forceDownload)
 
 	chdir("..")
 
-	print "\n =============================================================== <<o>>"
 
-
-
+print "\n\n =============================================================== <<o>>"
 
