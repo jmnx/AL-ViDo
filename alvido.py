@@ -3,9 +3,14 @@
 import sre
 import sys
 
-from os import path, mkdir, chdir
+from os import path, mkdir, chdir, getcwd
 
 from functions import *
+
+# Das Skript-Verzeichnes als Arbeits-Verzeichnis setzten, falls Skript als Cron-Job ausgefuert wird ;o)
+scrLocation = path.abspath(__file__)
+scrLocation = scrLocation[0:scrLocation.find("alvido.py")]
+chdir(scrLocation)
 
 print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n\nBitte beachtet, dass ihr die Videos nicht weiter geben duerft!\n\n"
 
@@ -17,6 +22,7 @@ nosetup = False
 forceDownload = False
 nocrs = False
 savesetup = "n"
+cronJob = False
 
 for argument in sys.argv :
 #	print "Argumnt: " +argument
@@ -33,13 +39,14 @@ for argument in sys.argv :
 
 	elif argument == "ti" or argument == "m1" or argument == "m2" :
 		mcrs = argument
+# 6*9
 		nocrs = True
 		print "\nKurs: "+argument+" -> Kursangabe wird ueberschrieben\n"
 
 	elif argument == "2012" or argument == "2013" or argument == "2014" or argument == "2015" :
 		year = argument
 		nosetup = True
-# 6*9		print "Jahr: "+argument
+#		print "Jahr: "+argument
 
 	elif argument == "save" :
 		savesetup = "j"
@@ -50,21 +57,22 @@ for argument in sys.argv :
 		forceDownload = True
 		print "Force Download! \n"
 
-	elif not argument == "./alvido.py" :
-		print "\n\nACHTUNG:\n\tKein gueltiges Argument : "+argument+"\n(Abbruch)"
-		sys.exit()
+	elif argument == "cron" :
+		if path.isfile("cron_setup.py"):
+			from cron_setup import *
+			cronJob = True
+		else :
+			print "ACHTUNG:\n\tCrone-Setup nicht gefunden, bitte 'crone_setup.py' erstellen!\n(Abbruch)"
+			sys.exit()
 
-#haftung  = raw_input("Vestanden [j/n] : ")
-#haftung  = "j"
 
-#if haftung != "j" :
-#	sys.exit()
+# ------------------------------------------------------------------------------------ Benutzerdaten
 
 # Die Datei user_data.py befindet sich nicht mit im Repository
 # Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
 # Bitte ergaenzen sie die Datei um die von Weitz erhaltenen Nutzerdaten
 
-# ------------------------------------------------------------------------------------ Benutzerdaten
+
 if path.isfile("user_data.py"):
 	print "Nutzerdaten gefunden!\n"
 else:
@@ -81,7 +89,6 @@ if usr == 'xxx' or pwd == 'xxx':
 	sys.exit()
 
 # ------------------------------------------------------------------------------------ Setup
-
 if path.isfile("setup.py") and not nosetup :
 	from setup import *
 	print "Setup-Datei gefunden und eingebunden."
@@ -116,8 +123,12 @@ if savesetup == "j":
 	saveTxtFile(savesetup, "setup.py")
 	print "Setup erstellt, beim naechsten starten des Skripts werden die Fragen nicht wieder gestellt."
 
-
 # ------------------------------------------------------------------------------------ Los gehts!
+if cronJob :
+	chdir(workDir)
+print "\nArbeitsverzeichnis: "+getcwd()+"\n"
+
+saveTxtFile("letzer zugriff: "+meineZeit(),"zg.txt")
 
 
 newDirCh(beautifulCrs(crs))

@@ -4,6 +4,7 @@ import sre
 import urllib2
 import base64
 import sys
+from time import *
 from os import path, mkdir, chdir
 
 def newDirCh(name):
@@ -38,8 +39,8 @@ def dwnldVideo(string, name, typ, force):
 		download_url = returnOne('type="webm.*?.webm', string)[17:]
 	else:
 		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-		sys.exit()
 # 6*9
+		sys.exit()
 	file_name = name+"."+typ
 
 	if path.isfile(file_name) and not force:
@@ -133,7 +134,10 @@ def saveTxtFile(contend, fname):
 	f.write(contend)
 	f.close()
 
-
+def meineZeit():
+	lt = localtime()
+	jahr, monat, tag, stunde, minute, sekunde = lt[0:6]
+	return str(jahr)+"."+str(monat)+"."+str(tag)+" - "+str(stunde)+":"+str(minute)+":"+str(sekunde)
 
 
 
