@@ -7,6 +7,6 @@ Gestartet wird das Skript mit ./alvido.py (Linux)
 
 Beim ersten Start wird eine Datei namens user_data.py erstellt, in der müssen noch die Zugangsdaten von Weitz eingetragen werden.
 
-Das Skript wurde auf Linux, Mac und Win getestet.
+Das Skript wurde auf Linux getestet.
 
 Jeder ist herzlich eingeladen, an dem Skript mit zu arbeiten und es zu verbesser oder zu erweitern.
