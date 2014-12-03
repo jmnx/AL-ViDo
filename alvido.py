@@ -89,39 +89,10 @@ if usr == 'xxx' or pwd == 'xxx':
 	sys.exit()
 
 # ------------------------------------------------------------------------------------ Setup
-if path.isfile("setup.py") and not nosetup :
-	from setup import *
-	print "Setup-Datei gefunden und eingebunden."
-
-elif not nosetup :
-	print "Welches Datei Format moechtest du haben?"
-	typ  = raw_input("[webm/mp4] : ")
-
-	print "In welchem Jahr hat das Semester angefangen?"
-	year = raw_input("z.B. 2014 : ")
-
-	print "Winter- oder Sommersemester?"
-	sem  = raw_input("[w/s] : ")
-
-	print "Welches Fach moechtest du runterladen?"
-	crs  = raw_input("[m1/m2/ti] : ")
-
-	print "Moechtest du deine Eingabe in einer Setup-Datei speichern?"
-	savesetup = raw_input("[j/n] : ")
-
+from setup import *
 
 if nocrs :
 	crs = mcrs
-
-#	print "Kommentare Speichern?"
-cmt = "j"
-
-
-if savesetup == "j":
-	savesetup = '#!/usr/bin/env python\n\ntyp  = "'+typ+'"\ncmt  = "'+cmt+'"\nyear = "'+year+'"\nsem  = "'+sem+'"\ncrs  = "'+crs+'"'
-
-	saveTxtFile(savesetup, "setup.py")
-	print "Setup erstellt, beim naechsten starten des Skripts werden die Fragen nicht wieder gestellt."
 
 # ------------------------------------------------------------------------------------ Los gehts!
 if cronJob :
