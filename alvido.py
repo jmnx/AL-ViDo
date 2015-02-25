@@ -116,7 +116,7 @@ for match in matches:
 
 	title = returnOne('title=".*?"',match)
 	datum = title[10:20]
-	name  = title[21:len(title)-1]
+	name  = title[21:len(title)-1].replace("?","")
 	
 	newDirCh(datum)
 
