@@ -104,9 +104,7 @@ saveTxtFile("letzer zugriff: "+meineZeit(),"zg.txt")
 
 newDirCh(beautifulCrs(crs))
 
-
 website_html = getSitePwd(genURL(year,sem,crs),usr,pwd)
-
 
 matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
 
@@ -114,9 +112,14 @@ for match in matches:
 
 	print "\n\n =============================================================== <<o>>"
 
+	#changed filename to be the whole title because MINF starts with 2 Letters more
+
 	title = returnOne('title=".*?"',match)
-	datum = title[10:20]
-	name  = title[21:len(title)-1].replace("?","")
+	oldName = title[21:len(title)-1]
+	title = title[7:len(title)-1].replace("?","")
+	datum = returnOne('date=".*?"',match)
+	datum = datum[6:len(datum)-1]
+	name  = title.replace("?","")
 	
 	newDirCh(datum)
 
@@ -126,7 +129,7 @@ for match in matches:
 	if cmt == "j":	
 		saveComments(match, name)
 	
-	dwnldVideo(match, name, typ, forceDownload)
+	dwnldVideo(match, name, oldName, typ, forceDownload)
 
 	chdir("..")
 

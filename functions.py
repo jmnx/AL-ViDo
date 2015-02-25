@@ -31,7 +31,7 @@ def getSite(url):
 	website = urllib2.urlopen(request)
 	return website.read()
 
-def dwnldVideo(string, name, typ, force):
+def dwnldVideo(string, name, oldName, typ, force):
 
 	if typ == "mp4":
 		download_url = returnOne('type="mp4.*?.mp4', string)[16:]
@@ -42,9 +42,12 @@ def dwnldVideo(string, name, typ, force):
 # 6*9
 		sys.exit()
 	file_name = name+"."+typ
+	old_file_name = oldName+"."+typ
 
 	if path.isfile(file_name) and not force:
 		print "Datei schon runtergeladen: "+file_name
+	elif path.isfile(old_file_name) and not force:
+		print "Datei schon runtergeladen: "+old_file_name
 	else:
 		download(download_url, file_name)
 
@@ -78,6 +81,12 @@ def beautifulCrs(crs):
 		crs = "Mathematik_2"
 	elif crs == "ti":
 		crs = "Theoretische_Informatik"
+	elif crs == "mi":
+		crs = "Ausgewaehlte_Themen_der_Medieninformatik"
+	elif crs == "dd":
+		crs = "Dies_und_Das"
+	elif crs == "ra":
+		crs = "Relationale_Algebra"	
 	else:
 		print "\n\nACHTUNG:\nKeinen gueltigen Kurs angegeben!\n(Abbruch)"
 		sys.exit()
@@ -97,6 +106,11 @@ def beautifulSem(sem):
 
 
 def genURL(jahr,sem,crs):
+	if crs == "dd":
+		return "http://weitz.de/haw-videos/Sonstiges/Dies_und_Das/data.xml"
+	elif crs =="ra":
+		return "http://weitz.de/haw-videos/Sonstiges/Relationale_Algebra/data.xml"
+
 	if 2013 > int(jahr) or int(jahr) > 2015:
 		print "\n\nACHTUNG:\nKein gueltiges Jahr angegeben!\n(Abbruch)"
 		sys.exit()

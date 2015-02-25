@@ -8,5 +8,9 @@ cmt  = "j"
 year = "2014"
 # Winter- oder Sommersemester?" w/s
 sem  = "w"
-# Welches Fach moechtest du runterladen? m1/m2/ti
+# Welches Fach moechtest du runterladen? m1/m2/ti/minf/dd/ra
+# minf = Ausgewaehlte Themen der Medieninformatiks
+# (derzeit nur SoSe 14)
+# dd = Dies und Das (Semester und Jahr egal)
+# ra = Relationale Algebra (Semester und Jahr egal)
 crs  = "m2"
