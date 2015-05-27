@@ -1,7 +1,7 @@
 AL ViDo
 ===========
 
-Ein Python Skript welches automatisch alle neuen Videos einer Vorlesungsreihe herunterläd.
+Ein Python-Skript, welches automatisch alle neuen Videos einer Vorlesungsreihe herunterlädt.
 
 Gestartet wird das Skript mit ./alvido.py (Linux)
 
@@ -9,4 +9,4 @@ Beim ersten Start wird eine Datei namens user_data.py erstellt, in der müssen n
 
 Das Skript wurde auf Linux getestet.
 
-Jeder ist herzlich eingeladen, an dem Skript mit zu arbeiten und es zu verbesser oder zu erweitern.
+Jeder ist herzlich eingeladen, an dem Skript mitzuarbeiten und es zu verbesser oder zu erweitern.
