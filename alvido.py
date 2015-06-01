@@ -24,6 +24,7 @@ nocrs = False
 savesetup = "n"
 cronJob = False
 
+
 for argument in sys.argv :
 #	print "Argumnt: " +argument
 
@@ -101,6 +102,8 @@ print "\nArbeitsverzeichnis: "+getcwd()+"\n"
 
 saveTxtFile("letzer zugriff: "+meineZeit(),"zg.txt")
 
+#print "OS ist "+os+"\n"
+
 
 newDirCh(beautifulCrs(crs))
 
@@ -115,11 +118,16 @@ for match in matches:
 	#changed filename to be the whole title because MINF starts with 2 Letters more
 
 	title = returnOne('title=".*?"',match)
-	oldName = title[21:len(title)-1]
+
+	name = title[21:len(title)-1]
+
 	title = title[7:len(title)-1].replace("?","")
 	datum = returnOne('date=".*?"',match)
 	datum = datum[6:len(datum)-1]
-	name  = title.replace("?","")
+
+	if os == "win" or os == "mac":
+		name  = name.replace("?","")
+		
 	
 	newDirCh(datum)
 
@@ -129,7 +137,7 @@ for match in matches:
 	if cmt == "j":	
 		saveComments(match, name)
 	
-	dwnldVideo(match, name, oldName, typ, forceDownload)
+	dwnldVideo(match, name, typ, forceDownload)
 
 	chdir("..")
 

@@ -31,7 +31,7 @@ def getSite(url):
 	website = urllib2.urlopen(request)
 	return website.read()
 
-def dwnldVideo(string, name, oldName, typ, force):
+def dwnldVideo(string, name, typ, force):
 
 	if typ == "mp4":
 		download_url = returnOne('type="mp4.*?.mp4', string)[16:]
@@ -39,15 +39,13 @@ def dwnldVideo(string, name, oldName, typ, force):
 		download_url = returnOne('type="webm.*?.webm', string)[17:]
 	else:
 		print "FEHLER: Unbekannter Dateityp!\n(Abbruch)"
-# 6*9
 		sys.exit()
+
+
 	file_name = name+"."+typ
-	old_file_name = oldName+"."+typ
 
 	if path.isfile(file_name) and not force:
 		print "Datei schon runtergeladen: "+file_name
-	elif path.isfile(old_file_name) and not force:
-		print "Datei schon runtergeladen: "+old_file_name
 	else:
 		download(download_url, file_name)
 

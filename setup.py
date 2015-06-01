@@ -13,4 +13,7 @@ sem  = "w"
 # (derzeit nur SoSe 14)
 # dd = Dies und Das (Semester und Jahr egal)
 # ra = Relationale Algebra (Semester und Jahr egal)
-crs  = "m2"
+crs  = "ti"
+
+# OS angabe um anomalien beim Dateinamen zu vermeiden [win/mac/linux]
+os = "linux"
