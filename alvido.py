@@ -1,146 +1,229 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-import sre
-import sys
-
-from os import path, mkdir, chdir, getcwd
-
-from functions import *
-
-# Das Skript-Verzeichnes als Arbeits-Verzeichnis setzten, falls Skript als Cron-Job ausgefuert wird ;o)
-scrLocation = path.abspath(__file__)
-scrLocation = scrLocation[0:scrLocation.find("alvido.py")]
-chdir(scrLocation)
-
-print "\nAL ViDo v0.1\n\nAutomatic Lecture Video Downloader\n\nBitte beachtet, dass ihr die Videos nicht weiter geben duerft!\n\n"
-
-print "Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen.\n\n"
-
-# ------------------------------------------------------------------------------------ Parameter
-debugmode = False
-nosetup = False
-forceDownload = False
-nocrs = False
-savesetup = "n"
-cronJob = False
+import sqlite3
+import json
+from os import path, makedirs
+from requests import get
+from urllib.request import urlopen
 
 
-for argument in sys.argv :
-#	print "Argumnt: " +argument
-
-	if argument == "mp4" or argument == "webm" :
-		typ = argument
-		nosetup = True
-#		print "Fileformat: "+argument
-	
-	elif argument == "w" or argument == "s" :
-		sem = argument
-		nosetup = True
-#		print "Semester: "+argument
-
-	elif argument == "ti" or argument == "m1" or argument == "m2" :
-		mcrs = argument
-# 6*9
-		nocrs = True
-		print "\nKurs: "+argument+" -> Kursangabe wird ueberschrieben\n"
-
-	elif argument == "2012" or argument == "2013" or argument == "2014" or argument == "2015" :
-		year = argument
-		nosetup = True
-#		print "Jahr: "+argument
-
-	elif argument == "save" :
-		savesetup = "j"
-		nosetup = True
-		print "Save Setup!"
-
-	elif argument == "force" :
-		forceDownload = True
-		print "Force Download! \n"
-
-	elif argument == "cron" :
-		if path.isfile("cron_setup.py"):
-			from cron_setup import *
-			cronJob = True
-		else :
-			print "ACHTUNG:\n\tCrone-Setup nicht gefunden, bitte 'crone_setup.py' erstellen!\n(Abbruch)"
-			sys.exit()
+sep = "=============================================================== <<o>>"
 
 
-# ------------------------------------------------------------------------------------ Benutzerdaten
+class Alvido(object):
+    __data = {
+        "m1": "Mathematik_1",
+        "m2": "Mathematik_2",
+        "ti": "Theoretische_Informatik",
+        "mi": "Ausgewaehlte_Themen_der_Medieninformatik",
+        "dd": "",
+        "ra": "Relationale_Algebra",
 
-# Die Datei user_data.py befindet sich nicht mit im Repository
-# Sie wird beim ersten ausfuehren des Skripts erstellt und das Skript wird abgebrochen
-# Bitte ergaenzen sie die Datei um die von Weitz erhaltenen Nutzerdaten
+        "w": "WiSe",
+        "s": "SoSe",
 
+        "mp4": "video/mp4",
+        "webm": "video/webm"
+    }
 
-if path.isfile("user_data.py"):
-	print "Nutzerdaten gefunden!\n"
-else:
-	saveTxtFile("#!/usr/bin/env python\n\n# Zugangs-Daten:\nusr = 'xxx'\npwd = 'xxx'", "user_data.py")
-	
-	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
-	sys.exit()
+    __os = ""
+    __url = "https://indexer.blackpinguin.de/"
+    __login = False
 
-from user_data import *
-#print "Nutzerdaten: "+usr+":"+pwd
+    __tables = []
 
-if usr == 'xxx' or pwd == 'xxx':
-	print "ACHTUNG:\n\tNutzerdaten wurden nicht gefunden!\n\tEine entsprechende Datei(user_data.py) wurde erstellt.\n\tBitte ergaenze diese, bevor Du das Skript neu startetest!\n(Abbruch)"
-	sys.exit()
+    def __init__(self, setupDir):
+        print("\n  ▄▄▄       ██▓  ██▒   █▓ ██▓▓█████▄  ▒█████  ")
+        print("  ▒████▄    ▓██▒ ▓██░   █▒▓██▒▒██▀ ██▌▒██▒  ██▒")
+        print("  ▒██  ▀█▄  ▒██░  ▓██  █▒░▒██▒░██   █▌▒██░  ██▒")
+        print("  ░██▄▄▄▄██ ▒██░   ▒██ █░░░██░░▓█▄   ▌▒██   ██░")
+        print("   ▓█   ▓██▒░██████▒▒▀█░  ░██░░▒████▓ ░ ████▓▒░")
+        print("   ▒▒   ▓▒█░░ ▒░▓  ░░ ▐░  ░▓   ▒▒▓  ▒ ░ ▒░▒░▒░ ")
+        print("    ▒   ▒▒ ░░ ░ ▒  ░░ ░░   ▒ ░ ░ ▒  ▒   ░ ▒ ▒░ ")
+        print("    ░   ▒     ░ ░     ░░   ▒ ░ ░ ░  ░ ░ ░ ░ ▒  ")
+        print("        ░  ░    ░  ░   ░   ░     ░        ░ ░  ")
+        print("                      ░        ░                v0.2")
+        print("\n\n  Automatic Lecture Video Downloader")
+        print("\n\n  Bitte beachtet, dass ihr die Videos nicht weiter geben duerft!")
 
-# ------------------------------------------------------------------------------------ Setup
-from setup import *
+        print("\n  Die Benutzung dieses Skripts geschiet auf eigenes Risiko, fuer Schaeden an Hard- oder Software wird keine Haftung uebernommen.\n")
 
-if nocrs :
-	crs = mcrs
+        self.__setupDir = setupDir
 
-# ------------------------------------------------------------------------------------ Los gehts!
-if cronJob :
-	chdir(workDir)
-print "\nArbeitsverzeichnis: "+getcwd()+"\n"
+        jsonSetup = self.__loadSetup(setupDir + "Setup.json")
+        self.__courses = jsonSetup["courses"]
+        self.__os = jsonSetup["os"]
 
-saveTxtFile("letzer zugriff: "+meineZeit(),"zg.txt")
+        with open(setupDir + "DataSource.json") as jDataSrc:
+            dsKey = jsonSetup["dataSource"]
+            dataSource = json.load(jDataSrc)[dsKey]
+            self.__url = dataSource["baseUrl"]
+            self.__login = dataSource["login"]
 
-#print "OS ist "+os+"\n"
+        self.__conn = sqlite3.connect(setupDir + jsonSetup["database"])
 
+    ##
+    # Process Data
+    ##
 
-newDirCh(beautifulCrs(crs))
+    def getAndProcessData(self):
+        self.__jsn = self.getJsonData(self.__url + "data.json")
 
-website_html = getSitePwd(genURL(year,sem,crs),usr,pwd)
+        for layer in self.__jsn["layers"]:
+            self.__aLayer(layer, "  ", ("json", ))
+            self.__conn.commit()
 
-matches = sre.findall('<video xmlns:xsi=.*?<\/video>', website_html)
+    def setup(self):
+        for s in self.__courses:
+            # print(s)
+            kurs = self.__data[s['course']]
+            semester = str(s['year']) + "_" + self.__data[s['semester']]
+            # TODO : Comments
+            comments = s['comments']
+            fformat = self.__data[s['mediatype']]
 
-for match in matches:
+            cur = self.__conn.cursor()
+            key = (semester,)
+            cur.execute('SELECT * FROM ' + kurs + ' WHERE sem=? ', key)
+            result = cur.fetchall()
 
-	print "\n\n =============================================================== <<o>>"
+            for r in result:
+                print("\n" + sep + "\n")
+                json_data = json.loads(r[5])
 
-	#changed filename to be the whole title because MINF starts with 2 Letters more
+#                print(str(r).encode("utf-8"))
+#                print(type(self.__setupDir))
+#                print(type(kurs))
+#                print(type(semester))
+#                print(type(r[2].encode("utf-8")))
 
-	title = returnOne('title=".*?"',match)
+                file_name = self.__setupDir + kurs + "/" + semester + "/" + r[2] + "/"
 
-	name = title[21:len(title)-1]
+                # file_name = str(file_name.encode("utf-8"))
 
-	title = title[7:len(title)-1].replace("?","")
-	datum = returnOne('date=".*?"',match)
-	datum = datum[6:len(datum)-1]
+                if not path.isdir(file_name):
+                    makedirs(file_name)
 
-	if os == "win" or os == "mac":
-		name  = name.replace("?","")
-		
-	
-	newDirCh(datum)
+                file_name += r[4] + "." + s['mediatype']
 
-	print "\n---> "+year+" "+beautifulSem(sem)+" "+beautifulCrs(crs)+" Datum: "+datum+" Name: "+name+"\n"
+                beding1 = path.isfile(file_name)
+                beding2 = r[6] != "Nope"
 
-	#Kommentare
-	if cmt == "j":	
-		saveComments(match, name)
-	
-	dwnldVideo(match, name, typ, forceDownload)
+                if beding1 and beding2:
+                    print("Datei schon runtergeladen: " + file_name)
+                else:
+                    files = json_data["files"]
+                    download_url = ""
+                    for f in files:
+                        if f['type'] == fformat:
+                            download_url = f['url']
+                            tmp_fformat = fformat
+                            break
+                    if download_url == "":
+                        download_url = files[0]['url']
+                        tmp_fformat = files[0]['type']
 
-	chdir("..")
+                    self.download(download_url, file_name)
+                    cur.execute('UPDATE ' + kurs + ' SET downloaded=? WHERE datum=? ',
+                                (tmp_fformat, r[2]))
+                    self.__conn.commit()
+                    print("\n  [Done]")
 
+            print("\n\n" + sep)
 
-print "\n\n =============================================================== <<o>>"
+    ##
+    # Helper Methods
+    ##
 
+    def getJsonData(self, url):
+        r = get(url)
+        text = r.text
+        text = text.replace("\"Russische Bauernmultiplikation\"", "Russische Bauernmultiplikation")
+        pos = text.find("M1 2016-12-12 04")
+        text = text[:pos + 17] + "Grosse" + text[pos + 24:]
+        jsn = json.loads(text)
+
+        return jsn
+
+    def __aLayer(self, data, preText, path):
+
+        path += (data['dirName'], )
+
+        if data['videos']:
+            for video in data['videos']:
+                self.__insertVideo(path, video)
+
+        if data['layers']:
+            for a in data['layers']:
+                self.__aLayer(a, preText + "  ", path)
+
+    def __insertVideo(self, data, video):
+
+        fach = data[2]
+        fach = fach.replace("+C3+A4", "ae").replace("+C3+BC", "ue")
+
+        # and a[2] in ["Dies_und_Das", "Relationale_Algebra"]:
+        if data[1] in ["Sonstiges", "Semester+C3+BCbergreifend"] or data[2] == "Unsortiert":
+            # sonder behandlung
+            # TODO
+            pass
+        else:
+            table = fach
+            if table not in self.__tables:
+                cur = self.__conn.cursor()
+                cur.execute("CREATE TABLE IF NOT EXISTS " + table +
+                            " (fach TEXT, sem TEXT, datum TEXT, nummer INTEGER, titel TEXT, video_json TEXT, downloaded TEXT)")
+                self.__tables.append(table)
+
+            video_json = json.dumps(video)
+            cutAway = video['title'].find(" ")
+            cutAway = cutAway + 10 + 2  # kurs + datum + leerzeichen
+
+            sem = data[1]
+            datum = data[3]
+
+            # TODO: replace checkIfNotExists() with SQL
+            if self.__checkIfNotExists(fach, video['title']):
+                # whereCl = " WHERE NOT EXISTS (SELECT * FROM " + data[2] +" )"
+                cur = self.__conn.cursor()
+                nr = video['title'][cutAway:cutAway + 2]
+
+                cur.execute('INSERT INTO ' + fach + '  VALUES (?,?,?,?,?,?,?)',
+                            (fach, sem, datum, nr, video['title'], video_json, "Nope"))
+
+    def __checkIfNotExists(self, kurs, titel):
+        key = (titel,)
+        cur = self.__conn.cursor()
+        cur.execute('SELECT * FROM ' + kurs + ' WHERE titel=? ', key)
+        return cur.fetchone() is None
+
+    def __loadSetup(self, setupFile):
+        with open(setupFile) as json_data:
+            return json.load(json_data)
+
+    def download(self, url, file_name):
+        u = urlopen(url)
+        f = open(file_name, 'wb')
+
+        meta = u.info()
+    #   print (meta)
+        file_size = int(dict(meta)["Content-Length"])
+        print("Es Wird herunter geladen :")
+        print("  %s Bytes: %s" % (file_name, file_size))
+
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            finished = file_size_dl * 100. / file_size
+            status = r"%10d  [%3.2f%%]" % (file_size_dl, finished)
+            status = status + chr(8) * (len(status) + 1)
+            print(status, end="\r")
+
+        f.close()
