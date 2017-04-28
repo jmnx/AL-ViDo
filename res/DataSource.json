@@ -1,0 +1,12 @@
+{
+  "Weitz" : {
+    "baseUrl" : "http://www.weitz.de/haw-videos/",
+    "login" : true,
+    "description" : ""
+    },
+  "rcl" : {
+    "baseUrl" : "https://indexer.blackpinguin.de/",
+    "login" : false,
+    "description" : ""
+    }
+}

@@ -1,0 +1,80 @@
+{
+  "os" : "linux",
+  "dataSource" : "rcl",
+  "database" : "Alvido.db",
+  "courses" : [
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2013,
+      "semester" : "w"
+    },
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2014,
+      "semester" : "s"
+    },
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2014,
+      "semester" : "w"
+    },
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2015,
+      "semester" : "s"
+    },
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2015,
+      "semester" : "w"
+    },
+    {
+      "course" : "ti",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2016,
+      "semester" : "s"
+    },
+    
+    {
+      "course" : "mi",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2014,
+      "semester" : "s"
+    },
+    {
+      "course" : "mi",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2015,
+      "semester" : "s"
+    },
+    {
+      "course" : "mi",
+      "description" : "",
+      "mediatype" : "webm",
+      "comments" : true,
+      "year" : 2016,
+      "semester" : "s"
+    }
+  ]
+}

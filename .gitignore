@@ -3,6 +3,8 @@
 *.webm
 *.html
 *.xml
+*.json
+*.txt
 m1/
 m2/
 ti/
@@ -11,9 +13,11 @@ Mathematik_2/
 Theoretische_Informatik/
 
 user_data.py
-zg.txt
 #setup.py
 
+*.db
+
+temp/
 
 
 # Byte-compiled / optimized / DLL files
